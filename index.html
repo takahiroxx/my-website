@@ -3,51 +3,833 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Simple HTML Page</title>
+    <meta
+      name="description"
+      content="精密板金は、試作から小ロット量産まで対応する板金加工会社です。レーザー切断、曲げ、溶接、仕上げ、組立まで一貫対応します。"
+    >
+    <title>精密板金 | 試作から量産まで一貫対応</title>
     <style>
       :root {
         color-scheme: light;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color: #1f2933;
-        background: #f6f8fa;
+        --ink: #182026;
+        --muted: #5d6872;
+        --subtle: #eef2f4;
+        --surface: #ffffff;
+        --line: #d8e0e5;
+        --steel: #6f7d87;
+        --blue: #0f5d8c;
+        --blue-dark: #0a3e61;
+        --orange: #cf6f2c;
+        --green: #4d7561;
+        --shadow: 0 20px 70px rgba(18, 32, 40, 0.12);
+        font-family:
+          "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, system-ui,
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7f9fa;
+        color: var(--ink);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
 
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(247, 249, 250, 0.96)),
+          repeating-linear-gradient(
+            90deg,
+            rgba(15, 93, 140, 0.045) 0,
+            rgba(15, 93, 140, 0.045) 1px,
+            transparent 1px,
+            transparent 92px
+          );
       }
 
-      main {
-        width: min(92vw, 640px);
-        padding: 48px 32px;
-        background: #ffffff;
-        border: 1px solid #d8dee4;
+      body,
+      button,
+      input,
+      textarea {
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid rgba(216, 224, 229, 0.88);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px);
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+        width: min(1160px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 14px 0;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: max-content;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
         border-radius: 8px;
-        box-shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
-        text-align: center;
+        background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+        color: #fff;
+        font-size: 1.15rem;
+        letter-spacing: 0.04em;
+      }
+
+      .brand small {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      nav a {
+        padding: 10px 12px;
+        border-radius: 8px;
+      }
+
+      nav a:hover {
+        background: var(--subtle);
+        color: var(--blue-dark);
+      }
+
+      .header-tel {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 800;
+      }
+
+      .hero {
+        width: min(1160px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 58px 0 48px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+        gap: 44px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 20px;
+        color: var(--blue);
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      .eyebrow::before {
+        width: 34px;
+        height: 3px;
+        content: "";
+        background: var(--orange);
       }
 
       h1 {
-        margin: 0 0 16px;
-        font-size: clamp(2rem, 6vw, 3.5rem);
-        line-height: 1.1;
+        max-width: 780px;
+        margin: 0;
+        font-size: clamp(2.6rem, 7vw, 5.7rem);
+        line-height: 1.02;
+        letter-spacing: 0;
       }
 
-      p {
+      .hero-copy {
+        max-width: 680px;
+        margin: 26px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.16rem);
+        line-height: 1.9;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 50px;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--ink);
+        font-weight: 800;
+        box-shadow: 0 10px 30px rgba(18, 32, 40, 0.06);
+      }
+
+      .button.primary {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .factory-visual {
+        position: relative;
+        min-height: 520px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(145deg, rgba(15, 93, 140, 0.18), transparent 42%),
+          linear-gradient(180deg, #ffffff, #edf2f5);
+        box-shadow: var(--shadow);
+      }
+
+      .factory-visual::before {
+        position: absolute;
+        inset: 20px;
+        content: "";
+        border: 1px solid rgba(15, 93, 140, 0.14);
+        border-radius: 8px;
+      }
+
+      .factory-visual svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .visual-label {
+        position: absolute;
+        z-index: 2;
+        display: grid;
+        gap: 6px;
+        padding: 16px;
+        border: 1px solid rgba(216, 224, 229, 0.86);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 14px 34px rgba(18, 32, 40, 0.12);
+      }
+
+      .visual-label strong {
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .visual-label span {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+      }
+
+      .visual-label.top {
+        top: 34px;
+        right: 34px;
+      }
+
+      .visual-label.bottom {
+        left: 34px;
+        bottom: 34px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .stat {
+        min-height: 118px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--blue-dark);
+        font-size: clamp(1.7rem, 4vw, 2.35rem);
+        line-height: 1;
+      }
+
+      .stat span {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      section {
+        width: min(1160px, calc(100% - 32px));
         margin: 0 auto;
-        max-width: 44rem;
-        color: #52606d;
-        font-size: 1.1rem;
+        padding: 78px 0;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(260px, 0.48fr);
+        gap: 28px;
+        align-items: end;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4.8vw, 3.7rem);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .section-head p,
+      .lead {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .service-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .service-card {
+        min-height: 260px;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: 0 10px 36px rgba(18, 32, 40, 0.05);
+      }
+
+      .service-card .number {
+        color: var(--orange);
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      .service-card h3 {
+        margin: 58px 0 14px;
+        font-size: 1.34rem;
+      }
+
+      .service-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .process {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--line);
+      }
+
+      .step {
+        min-height: 196px;
+        padding: 22px;
+        background: #fff;
+      }
+
+      .step span {
+        display: inline-grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--subtle);
+        color: var(--blue-dark);
+        font-weight: 900;
+      }
+
+      .step h3 {
+        margin: 28px 0 10px;
+        font-size: 1.05rem;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
         line-height: 1.7;
+      }
+
+      .equipment {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .equipment-panel {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+
+      .equipment-panel.feature {
+        display: grid;
+        align-content: end;
+        min-height: 420px;
+        background:
+          linear-gradient(145deg, rgba(15, 93, 140, 0.88), rgba(10, 62, 97, 0.92)),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: auto, 42px 42px;
+        color: #fff;
+      }
+
+      .equipment-panel.feature p {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .equipment-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .equipment-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .equipment-list strong {
+        color: var(--ink);
+      }
+
+      .industries {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .industries span {
+        padding: 10px 13px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      .contact-band {
+        width: min(1160px, calc(100% - 32px));
+        margin: 18px auto 0;
+        padding: 42px;
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(207, 111, 44, 0.22), transparent 36%),
+          var(--ink);
+        color: #fff;
+      }
+
+      .contact-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.48fr);
+        gap: 28px;
+        align-items: center;
+      }
+
+      .contact-band h2 {
+        max-width: 760px;
+      }
+
+      .contact-band p {
+        max-width: 650px;
+        margin: 18px 0 0;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.8;
+      }
+
+      .contact-box {
+        display: grid;
+        gap: 10px;
+        padding: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .contact-box a {
+        font-size: 1.55rem;
+        font-weight: 900;
+      }
+
+      .contact-box span {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      footer {
+        width: min(1160px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 30px 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 940px) {
+        nav {
+          display: none;
+        }
+
+        .hero-grid,
+        .section-head,
+        .equipment,
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .factory-visual {
+          min-height: 430px;
+        }
+
+        .stats,
+        .service-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .process {
+          grid-template-columns: 1fr;
+        }
+
+        .step {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .header-inner,
+        .hero,
+        section,
+        .contact-band,
+        footer {
+          width: min(100% - 24px, 1160px);
+        }
+
+        .header-tel {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 40px;
+        }
+
+        .stats,
+        .service-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          display: grid;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .factory-visual {
+          min-height: 340px;
+        }
+
+        .visual-label {
+          padding: 12px;
+        }
+
+        .visual-label strong {
+          font-size: 1.2rem;
+        }
+
+        .visual-label.top {
+          top: 22px;
+          right: 22px;
+        }
+
+        .visual-label.bottom {
+          left: 22px;
+          bottom: 22px;
+        }
+
+        .contact-band {
+          padding: 28px 20px;
+        }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>こんにちは</h1>
-      <p>これはシンプルなHTMLページです。必要に応じて、この内容を自由に編集できます。</p>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="精密板金 ホーム">
+          <span class="brand-mark">板</span>
+          <span>
+            精密板金
+            <small>SEIMITSU SHEET METAL WORKS</small>
+          </span>
+        </a>
+        <nav aria-label="主要ナビゲーション">
+          <a href="#services">加工内容</a>
+          <a href="#process">製作の流れ</a>
+          <a href="#equipment">設備</a>
+          <a href="#contact">見積相談</a>
+        </nav>
+        <a class="header-tel" href="tel:0312345678">03-1234-5678</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">試作・小ロット・量産部品</p>
+            <h1 id="hero-title">図面一枚から、精度の出る板金部品へ。</h1>
+            <p class="hero-copy">
+              ステンレス、アルミ、鉄のレーザー切断、曲げ、溶接、仕上げまで一貫対応。
+              筐体、ブラケット、カバー、架台など、現場で使える品質と納期で製作します。
+            </p>
+            <div class="actions">
+              <a class="button primary" href="#contact">見積もりを相談</a>
+              <a class="button" href="#services">加工内容を見る</a>
+            </div>
+          </div>
+
+          <div class="factory-visual" aria-label="板金加工の工程イメージ">
+            <svg viewBox="0 0 560 620" role="img" aria-labelledby="visual-title">
+              <title id="visual-title">レーザー切断、曲げ、溶接を表す工場イラスト</title>
+              <defs>
+                <linearGradient id="sheet" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f8fbfc"></stop>
+                  <stop offset="0.55" stop-color="#b9c5cc"></stop>
+                  <stop offset="1" stop-color="#73818b"></stop>
+                </linearGradient>
+                <linearGradient id="machine" x1="0" x2="1">
+                  <stop offset="0" stop-color="#173f58"></stop>
+                  <stop offset="1" stop-color="#0f5d8c"></stop>
+                </linearGradient>
+              </defs>
+              <rect x="72" y="72" width="416" height="476" rx="18" fill="#f6f9fa" stroke="#d8e0e5"></rect>
+              <path d="M118 188h324v62H118z" fill="url(#machine)"></path>
+              <path d="M144 250h272v48H144z" fill="#182026"></path>
+              <path d="M180 112h200v76H180z" fill="#25323b"></path>
+              <path d="M206 132h148v36H206z" fill="#6f7d87"></path>
+              <path d="M156 390l170-74 106 52-170 76z" fill="url(#sheet)" stroke="#64727d" stroke-width="2"></path>
+              <path d="M326 316v76l106 52v-76z" fill="#91a0aa" stroke="#64727d" stroke-width="2"></path>
+              <path d="M156 390v76l106 54v-76z" fill="#c7d0d6" stroke="#64727d" stroke-width="2"></path>
+              <path d="M110 482h340" stroke="#b9c5cc" stroke-width="10" stroke-linecap="round"></path>
+              <path d="M112 520h336" stroke="#d8e0e5" stroke-width="2"></path>
+              <path d="M280 250v92" stroke="#cf6f2c" stroke-width="5" stroke-linecap="round"></path>
+              <circle cx="280" cy="350" r="12" fill="#cf6f2c"></circle>
+              <path d="M246 350h68M280 316v68" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9"></path>
+              <path d="M112 154h58M390 154h58M124 132h32M404 132h32" stroke="#0f5d8c" stroke-width="8" stroke-linecap="round"></path>
+              <path d="M120 74l368 474" stroke="#ffffff" stroke-width="14" opacity=".34"></path>
+            </svg>
+            <div class="visual-label top">
+              <strong>±0.1</strong>
+              <span>精密曲げ相談可</span>
+            </div>
+            <div class="visual-label bottom">
+              <strong>1個〜</strong>
+              <span>試作にも対応</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats" aria-label="対応範囲">
+          <div class="stat">
+            <strong>3日〜</strong>
+            <span>短納期案件の相談</span>
+          </div>
+          <div class="stat">
+            <strong>0.8-9mm</strong>
+            <span>板厚目安</span>
+          </div>
+          <div class="stat">
+            <strong>CAD</strong>
+            <span>DXF・STEP対応</span>
+          </div>
+          <div class="stat">
+            <strong>一貫</strong>
+            <span>加工から組立まで</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" aria-labelledby="services-title">
+        <div class="section-head">
+          <h2 id="services-title">必要な加工を、社内でまとめて進行。</h2>
+          <p>
+            単工程だけでなく、部品同士の取り合いや組立後の使われ方まで見て製作します。
+          </p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card">
+            <span class="number">01</span>
+            <h3>レーザー切断・抜き</h3>
+            <p>鉄、ステンレス、アルミの薄板から中厚板まで。図面データ支給、現物合わせの相談にも対応します。</p>
+          </article>
+          <article class="service-card">
+            <span class="number">02</span>
+            <h3>曲げ加工</h3>
+            <p>カバー、筐体、ブラケットなどの寸法精度を重視。干渉や曲げ順も事前に確認します。</p>
+          </article>
+          <article class="service-card">
+            <span class="number">03</span>
+            <h3>溶接・仕上げ</h3>
+            <p>TIG、半自動、スポット溶接からバリ取り、ヘアライン、塗装手配まで用途に合わせて仕上げます。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="process" aria-labelledby="process-title">
+        <div class="section-head">
+          <h2 id="process-title">相談から納品までの流れ。</h2>
+          <p>
+            仕様が固まり切っていない段階でも、用途と必要数量から加工方法を整理します。
+          </p>
+        </div>
+        <div class="process">
+          <article class="step">
+            <span>1</span>
+            <h3>図面確認</h3>
+            <p>PDF、DXF、STEP、手描きスケッチを確認し、材料と数量を整理します。</p>
+          </article>
+          <article class="step">
+            <span>2</span>
+            <h3>見積提出</h3>
+            <p>加工方法、納期、仕上げ条件を明確にして回答します。</p>
+          </article>
+          <article class="step">
+            <span>3</span>
+            <h3>加工準備</h3>
+            <p>展開、治具、曲げ順を確認し、製作リスクを先に潰します。</p>
+          </article>
+          <article class="step">
+            <span>4</span>
+            <h3>製作・検査</h3>
+            <p>切断、曲げ、溶接、仕上げを進め、寸法と外観を確認します。</p>
+          </article>
+          <article class="step">
+            <span>5</span>
+            <h3>納品</h3>
+            <p>引取、近郊配送、宅配便など案件に合わせて出荷します。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="equipment" aria-labelledby="equipment-title">
+        <div class="equipment">
+          <div class="equipment-panel feature">
+            <p class="eyebrow">設備と対応材質</p>
+            <h2 id="equipment-title">量産前の試作から、現場補修部品まで。</h2>
+            <p class="lead">
+              工場設備、食品機械、建築金物、制御盤まわりなど、用途に合わせた材質と仕上げを提案します。
+            </p>
+          </div>
+          <div class="equipment-panel">
+            <ul class="equipment-list">
+              <li><strong>ファイバーレーザー加工機</strong><span>鉄・SUS・AL</span></li>
+              <li><strong>プレスブレーキ</strong><span>精密曲げ</span></li>
+              <li><strong>TIG / 半自動溶接</strong><span>薄板溶接</span></li>
+              <li><strong>スポット溶接機</strong><span>筐体・カバー</span></li>
+              <li><strong>バリ取り・研磨</strong><span>外観仕上げ</span></li>
+              <li><strong>協力工場ネットワーク</strong><span>塗装・メッキ</span></li>
+            </ul>
+            <div class="industries" aria-label="対応分野">
+              <span>設備部品</span>
+              <span>制御盤</span>
+              <span>建築金物</span>
+              <span>食品機械</span>
+              <span>架台</span>
+              <span>試作部品</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="contact-band" aria-labelledby="contact-title">
+        <div class="contact-grid">
+          <div>
+            <h2 id="contact-title">図面、写真、現物から見積もりできます。</h2>
+            <p>
+              材質、板厚、数量、希望納期が分かる資料をお送りください。仕様が未確定でも、製作しやすい形状から一緒に詰めます。
+            </p>
+          </div>
+          <div class="contact-box">
+            <span>平日 8:30-17:30</span>
+            <a href="tel:0312345678">03-1234-5678</a>
+            <a class="button primary" href="mailto:info@example.jp">メールで相談</a>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      <small>&copy; 2026 精密板金　東京都大田区南蒲田 1-2-3</small>
+    </footer>
   </body>
 </html>
