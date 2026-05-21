@@ -5,25 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="川越、長瀞、秩父、飯能、大宮など、埼玉県の観光地を日帰り旅行向けにまとめたガイドサイトです。"
+      content="クラシックなゴルフクラブの雰囲気で、コース、ラウンド、クラブハウスの魅力を伝えるウェブサイトです。"
     >
-    <title>埼玉よりみち案内 | 日帰りで巡る観光スポット</title>
+    <title>Hillside Classic Golf Club | 週末はフェアウェイへ</title>
     <style>
       :root {
         color-scheme: light;
-        --ink: #17211d;
-        --muted: #657069;
-        --paper: #fffdf8;
-        --surface: #ffffff;
-        --mist: #edf5ef;
-        --line: #dbe6dc;
-        --forest: #23624a;
-        --forest-dark: #123c30;
-        --river: #2f78a0;
-        --brick: #a94d3a;
-        --gold: #d69c3b;
-        --plum: #8c4d7a;
-        --shadow: 0 24px 70px rgba(23, 33, 29, 0.14);
+        --ink: #1d241c;
+        --muted: #6f725f;
+        --cream: #f5efdE;
+        --paper: #fbf7eb;
+        --surface: #fffdf6;
+        --green: #123f2c;
+        --green-deep: #082719;
+        --fairway: #5f7f45;
+        --brass: #b99045;
+        --claret: #7c2d25;
+        --line: rgba(29, 36, 28, 0.16);
+        --shadow: 0 24px 70px rgba(22, 34, 25, 0.18);
         font-family:
           "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, system-ui,
           -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -43,9 +42,14 @@
         margin: 0;
         min-height: 100vh;
         background:
-          linear-gradient(180deg, rgba(255, 253, 248, 0.86), rgba(255, 253, 248, 1) 46%),
-          radial-gradient(circle at 12% 8%, rgba(214, 156, 59, 0.2), transparent 25%),
-          radial-gradient(circle at 86% 2%, rgba(47, 120, 160, 0.16), transparent 28%);
+          linear-gradient(180deg, rgba(251, 247, 235, 0.92), rgba(251, 247, 235, 1) 42%),
+          repeating-linear-gradient(
+            90deg,
+            rgba(18, 63, 44, 0.04) 0,
+            rgba(18, 63, 44, 0.04) 1px,
+            transparent 1px,
+            transparent 88px
+          );
       }
 
       body,
@@ -59,17 +63,20 @@
       }
 
       img,
-      svg {
+      canvas {
         display: block;
         max-width: 100%;
       }
 
       .site-header {
-        position: sticky;
+        position: fixed;
         top: 0;
+        right: 0;
+        left: 0;
         z-index: 20;
-        border-bottom: 1px solid rgba(219, 230, 220, 0.9);
-        background: rgba(255, 253, 248, 0.9);
+        border-bottom: 1px solid rgba(245, 239, 222, 0.22);
+        background: rgba(8, 39, 25, 0.78);
+        color: var(--cream);
         backdrop-filter: blur(18px);
       }
 
@@ -77,10 +84,10 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 22px;
-        width: min(1160px, calc(100% - 32px));
+        gap: 24px;
+        width: min(1180px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 13px 0;
+        padding: 14px 0;
       }
 
       .brand {
@@ -93,18 +100,21 @@
 
       .brand-mark {
         display: grid;
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         place-items: center;
+        border: 1px solid rgba(185, 144, 69, 0.6);
         border-radius: 8px;
-        background: linear-gradient(135deg, var(--forest), var(--river));
-        color: #fff;
+        background: linear-gradient(135deg, #f5efde, #b99045);
+        color: var(--green-deep);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.2rem;
         font-weight: 900;
       }
 
       .brand small {
         display: block;
-        color: var(--muted);
+        color: rgba(245, 239, 222, 0.68);
         font-size: 0.72rem;
         font-weight: 800;
       }
@@ -112,8 +122,8 @@
       nav {
         display: flex;
         align-items: center;
-        gap: 6px;
-        color: var(--muted);
+        gap: 4px;
+        color: rgba(245, 239, 222, 0.74);
         font-size: 0.92rem;
         font-weight: 800;
       }
@@ -124,70 +134,97 @@
       }
 
       nav a:hover {
-        background: var(--mist);
-        color: var(--forest-dark);
+        background: rgba(245, 239, 222, 0.12);
+        color: #fff;
       }
 
-      .header-link {
+      .header-cta {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         min-height: 42px;
         padding: 0 16px;
         border-radius: 8px;
-        background: var(--ink);
-        color: #fff;
+        background: var(--cream);
+        color: var(--green-deep);
         font-weight: 900;
       }
 
       .hero {
+        position: relative;
         display: grid;
-        min-height: 78svh;
+        min-height: 92svh;
+        overflow: hidden;
         align-items: end;
         background:
-          linear-gradient(90deg, rgba(18, 60, 48, 0.86), rgba(18, 60, 48, 0.58) 45%, rgba(18, 60, 48, 0.18)),
-          url("https://commons.wikimedia.org/wiki/Special:FilePath/Boat%20%40%20Nagatoro%20Iwadatami%20Rocks%20%2811043333585%29.jpg?width=1800");
+          linear-gradient(90deg, rgba(8, 39, 25, 0.98), rgba(8, 39, 25, 0.72) 43%, rgba(8, 39, 25, 0.16)),
+          url("https://commons.wikimedia.org/wiki/Special:FilePath/East%20Lake%20Golf%20Club%20Clubhouse.JPG?width=1800");
         background-position: center;
         background-size: cover;
-        color: #fff;
+        color: var(--cream);
+      }
+
+      .hero::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+        pointer-events: none;
+        background:
+          linear-gradient(180deg, rgba(8, 39, 25, 0.08), rgba(8, 39, 25, 0.45) 70%, rgba(8, 39, 25, 0.94)),
+          repeating-linear-gradient(
+            90deg,
+            rgba(245, 239, 222, 0.04) 0,
+            rgba(245, 239, 222, 0.04) 1px,
+            transparent 1px,
+            transparent 96px
+          );
       }
 
       .hero-inner {
-        width: min(1160px, calc(100% - 32px));
+        position: relative;
+        z-index: 2;
+        width: min(1180px, calc(100% - 32px));
         margin: 0 auto;
-        padding: 82px 0 54px;
+        padding: 162px 0 54px;
       }
 
       .eyebrow {
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        margin: 0 0 22px;
-        color: #ffdf94;
+        margin: 0 0 20px;
+        color: #e1c47b;
         font-size: 0.82rem;
         font-weight: 900;
       }
 
       .eyebrow::before {
-        width: 34px;
+        width: 36px;
         height: 3px;
         content: "";
-        background: #ffdf94;
+        background: var(--brass);
       }
 
-      h1 {
-        max-width: 820px;
-        margin: 0;
-        font-size: clamp(2.8rem, 8vw, 6.5rem);
-        line-height: 1.02;
+      h1,
+      h2 {
+        font-family: Georgia, "Times New Roman", "Noto Serif JP", serif;
+        font-weight: 700;
         letter-spacing: 0;
       }
 
+      h1 {
+        max-width: 850px;
+        margin: 0;
+        font-size: clamp(3rem, 8vw, 7.2rem);
+        line-height: 0.98;
+      }
+
       .hero-copy {
-        max-width: 700px;
+        max-width: 680px;
         margin: 24px 0 0;
-        color: rgba(255, 255, 255, 0.88);
+        color: rgba(245, 239, 222, 0.82);
         font-size: clamp(1rem, 2vw, 1.16rem);
-        line-height: 1.95;
+        line-height: 1.9;
       }
 
       .actions {
@@ -203,53 +240,56 @@
         justify-content: center;
         min-height: 50px;
         padding: 0 18px;
-        border: 1px solid rgba(255, 255, 255, 0.34);
+        border: 1px solid rgba(245, 239, 222, 0.28);
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.13);
-        color: #fff;
+        background: rgba(245, 239, 222, 0.1);
+        color: var(--cream);
         font-weight: 900;
         backdrop-filter: blur(12px);
       }
 
       .button.primary {
-        border-color: #fff;
-        background: #fff;
-        color: var(--forest-dark);
+        border-color: var(--cream);
+        background: var(--cream);
+        color: var(--green-deep);
       }
 
-      .hero-panel {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1px;
-        max-width: 820px;
-        margin-top: 56px;
+      .course-layout-panel {
+        position: relative;
+        max-width: 920px;
+        margin-top: 52px;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.22);
+        border: 1px solid rgba(245, 239, 222, 0.2);
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(8, 39, 25, 0.5);
+        box-shadow: var(--shadow);
       }
 
-      .hero-stat {
-        min-height: 92px;
-        padding: 18px;
-        background: rgba(18, 60, 48, 0.42);
+      #course-layout {
+        width: 100%;
+        height: 310px;
       }
 
-      .hero-stat strong {
-        display: block;
-        font-size: 1.55rem;
+      .layout-caption {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        left: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        pointer-events: none;
       }
 
-      .hero-stat span {
-        display: block;
-        margin-top: 4px;
-        color: rgba(255, 255, 255, 0.78);
-        font-size: 0.86rem;
-        font-weight: 800;
-      }
-
-      main {
-        overflow: hidden;
+      .layout-caption span {
+        padding: 7px 9px;
+        border: 1px solid rgba(245, 239, 222, 0.18);
+        border-radius: 8px;
+        background: rgba(8, 39, 25, 0.62);
+        color: var(--cream);
+        font-size: 0.76rem;
+        font-weight: 900;
+        backdrop-filter: blur(10px);
       }
 
       section {
@@ -257,13 +297,13 @@
       }
 
       .section-inner {
-        width: min(1160px, calc(100% - 32px));
+        width: min(1180px, calc(100% - 32px));
         margin: 0 auto;
       }
 
       .section-heading {
         display: grid;
-        grid-template-columns: minmax(0, 0.8fr) minmax(280px, 0.5fr);
+        grid-template-columns: minmax(0, 0.82fr) minmax(280px, 0.5fr);
         gap: 34px;
         align-items: end;
         margin-bottom: 34px;
@@ -271,15 +311,15 @@
 
       .label {
         margin: 0 0 12px;
-        color: var(--brick);
+        color: var(--claret);
         font-size: 0.78rem;
         font-weight: 900;
       }
 
       h2 {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 3.7rem);
-        line-height: 1.12;
+        font-size: clamp(2rem, 4.8vw, 4rem);
+        line-height: 1.08;
       }
 
       .section-copy {
@@ -288,269 +328,200 @@
         line-height: 1.9;
       }
 
-      .area-grid {
+      .course-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
+        grid-template-columns: 1.08fr 0.92fr 0.92fr;
+        gap: 16px;
       }
 
-      .spot-card {
+      .course-card,
+      .stat-card,
+      .plan-card {
         overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: var(--surface);
-        box-shadow: 0 16px 44px rgba(23, 33, 29, 0.08);
+        box-shadow: 0 16px 44px rgba(22, 34, 25, 0.08);
       }
 
-      .spot-card.featured {
-        grid-column: span 2;
+      .course-photo {
+        min-height: 260px;
+        background:
+          linear-gradient(180deg, rgba(8, 39, 25, 0.04), rgba(8, 39, 25, 0.38)),
+          url("https://commons.wikimedia.org/wiki/Special:FilePath/Fairway%20on%20Fulford%20Golf%20Course%20-%20geograph.org.uk%20-%205325781.jpg?width=1200");
+        background-position: center;
+        background-size: cover;
       }
 
-      .spot-image {
-        position: relative;
-        aspect-ratio: 16 / 10;
-        overflow: hidden;
-        background: var(--mist);
+      .card-body,
+      .stat-card,
+      .plan-card {
+        padding: 22px;
       }
 
-      .spot-card.featured .spot-image {
-        aspect-ratio: 16 / 8.2;
-      }
-
-      .spot-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.35s ease;
-      }
-
-      .spot-card:hover img {
-        transform: scale(1.04);
-      }
-
-      .tag {
-        position: absolute;
-        left: 14px;
-        bottom: 14px;
-        padding: 7px 10px;
-        border-radius: 8px;
-        background: rgba(255, 253, 248, 0.92);
-        color: var(--forest-dark);
-        font-size: 0.78rem;
-        font-weight: 900;
-      }
-
-      .spot-body {
-        padding: 20px;
-      }
-
-      .spot-body h3 {
+      .card-body h3,
+      .stat-card h3,
+      .plan-card h3 {
         margin: 0;
-        font-size: 1.26rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.32rem;
       }
 
-      .spot-body p {
+      .card-body p,
+      .stat-card p,
+      .plan-card p {
         margin: 12px 0 0;
         color: var(--muted);
         line-height: 1.8;
       }
 
-      .meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-top: 16px;
-      }
-
-      .meta span {
-        padding: 7px 9px;
-        border-radius: 8px;
-        background: var(--mist);
-        color: var(--forest-dark);
-        font-size: 0.78rem;
-        font-weight: 900;
-      }
-
-      .band {
+      .stat-card {
+        display: grid;
+        min-height: 340px;
+        align-content: space-between;
         background:
-          linear-gradient(90deg, rgba(35, 98, 74, 0.92), rgba(47, 120, 160, 0.86)),
-          url("https://commons.wikimedia.org/wiki/Special:FilePath/Toki%20no%20Kane%201.jpg?width=1500");
-        background-attachment: fixed;
-        background-position: center;
-        background-size: cover;
-        color: #fff;
+          linear-gradient(180deg, rgba(18, 63, 44, 0.08), rgba(185, 144, 69, 0.1)),
+          var(--surface);
       }
 
-      .route-grid {
+      .stat {
+        color: var(--green);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 3.2rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .amenities {
+        background:
+          linear-gradient(180deg, #123f2c, #082719);
+        color: var(--cream);
+      }
+
+      .amenities .section-copy {
+        color: rgba(245, 239, 222, 0.72);
+      }
+
+      .amenity-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-      }
-
-      .route-card {
-        min-height: 330px;
-        padding: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.22);
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid rgba(245, 239, 222, 0.16);
         border-radius: 8px;
-        background: rgba(255, 255, 255, 0.13);
-        backdrop-filter: blur(12px);
+        background: rgba(245, 239, 222, 0.16);
       }
 
-      .route-card h3 {
-        margin: 0;
-        font-size: 1.35rem;
+      .amenity {
+        min-height: 250px;
+        padding: 22px;
+        background: rgba(245, 239, 222, 0.08);
       }
 
-      .route-card ol {
+      .amenity strong {
+        color: #e1c47b;
+      }
+
+      .amenity h3 {
+        margin: 18px 0 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.2rem;
+      }
+
+      .amenity p {
+        margin: 12px 0 0;
+        color: rgba(245, 239, 222, 0.72);
+        line-height: 1.75;
+      }
+
+      .tradition-grid {
         display: grid;
-        gap: 12px;
-        margin: 22px 0 0;
-        padding-left: 22px;
-        color: rgba(255, 255, 255, 0.88);
-        line-height: 1.7;
-      }
-
-      .route-card li::marker {
-        color: #ffdf94;
-        font-weight: 900;
-      }
-
-      .season-grid {
-        display: grid;
-        grid-template-columns: 0.9fr 1.1fr;
+        grid-template-columns: 0.92fr 1.08fr;
         gap: 28px;
-        align-items: start;
+        align-items: stretch;
       }
 
-      .season-photo {
-        min-height: 600px;
+      .tradition-photo {
+        min-height: 560px;
         border-radius: 8px;
         background:
-          linear-gradient(180deg, rgba(23, 33, 29, 0.06), rgba(23, 33, 29, 0.34)),
-          url("https://commons.wikimedia.org/wiki/Special:FilePath/Chichibu%20Hitsujiyama%20Park%20Phlox%20Hill%201.JPG?width=1300");
+          linear-gradient(180deg, rgba(29, 36, 28, 0.05), rgba(29, 36, 28, 0.42)),
+          url("https://commons.wikimedia.org/wiki/Special:FilePath/Golf%20Flagstick.jpg?width=1100");
         background-position: center;
         background-size: cover;
         box-shadow: var(--shadow);
       }
 
-      .season-list {
+      .plan-list {
         display: grid;
-        gap: 12px;
-      }
-
-      .season-item {
-        display: grid;
-        grid-template-columns: 90px minmax(0, 1fr);
-        gap: 18px;
-        padding: 20px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: var(--surface);
-      }
-
-      .season-item strong {
-        color: var(--brick);
-      }
-
-      .season-item h3 {
-        margin: 0;
-        font-size: 1.1rem;
-      }
-
-      .season-item p {
-        margin: 8px 0 0;
-        color: var(--muted);
-        line-height: 1.75;
-      }
-
-      .tips {
-        background: #f4f0e8;
-      }
-
-      .tips-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
         gap: 14px;
       }
 
-      .tip {
-        padding: 22px;
-        border: 1px solid rgba(23, 33, 29, 0.1);
-        border-radius: 8px;
-        background: rgba(255, 253, 248, 0.72);
+      .plan-card {
+        display: grid;
+        grid-template-columns: 90px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
       }
 
-      .tip svg {
-        width: 32px;
-        height: 32px;
-        color: var(--forest);
+      .plan-card strong {
+        color: var(--claret);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.4rem;
       }
 
-      .tip h3 {
-        margin: 16px 0 0;
-        font-size: 1.06rem;
+      .booking {
+        padding-bottom: 96px;
+        background: #efe7d4;
       }
 
-      .tip p {
-        margin: 10px 0 0;
-        color: var(--muted);
-        line-height: 1.75;
-      }
-
-      .closing {
-        padding-bottom: 92px;
-      }
-
-      .closing-box {
+      .booking-box {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         gap: 28px;
         align-items: center;
-        padding: 34px;
+        padding: 36px;
+        border: 1px solid rgba(18, 63, 44, 0.2);
         border-radius: 8px;
-        background: var(--forest-dark);
-        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(18, 63, 44, 0.94), rgba(8, 39, 25, 0.94));
+        color: var(--cream);
+        box-shadow: var(--shadow);
       }
 
-      .closing-box h2 {
-        font-size: clamp(1.8rem, 4vw, 3rem);
+      .booking-box .label {
+        color: #e1c47b;
       }
 
-      .closing-box p {
-        max-width: 690px;
+      .booking-box p {
+        max-width: 720px;
         margin: 14px 0 0;
-        color: rgba(255, 255, 255, 0.78);
+        color: rgba(245, 239, 222, 0.76);
         line-height: 1.85;
       }
 
       .site-footer {
-        border-top: 1px solid var(--line);
-        background: #fff;
-        color: var(--muted);
+        border-top: 1px solid rgba(245, 239, 222, 0.16);
+        background: var(--green-deep);
+        color: rgba(245, 239, 222, 0.66);
       }
 
       .footer-inner {
         display: flex;
         justify-content: space-between;
         gap: 18px;
-        width: min(1160px, calc(100% - 32px));
+        width: min(1180px, calc(100% - 32px));
         margin: 0 auto;
         padding: 26px 0;
-        font-size: 0.82rem;
+        font-size: 0.84rem;
         line-height: 1.7;
       }
 
-      .footer-inner a {
-        color: var(--forest-dark);
-        font-weight: 800;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-
-      @media (max-width: 900px) {
+      @media (max-width: 940px) {
         .header-inner {
           align-items: flex-start;
           flex-direction: column;
+          gap: 10px;
         }
 
         nav {
@@ -559,47 +530,50 @@
           padding-bottom: 2px;
         }
 
-        .header-link {
+        .header-cta {
           display: none;
         }
 
-        .hero-panel,
+        .hero {
+          min-height: 820px;
+        }
+
         .section-heading,
-        .season-grid,
-        .closing-box {
+        .course-grid,
+        .tradition-grid,
+        .booking-box {
           grid-template-columns: 1fr;
         }
 
-        .area-grid,
-        .route-grid,
-        .tips-grid {
+        .amenity-grid {
           grid-template-columns: repeat(2, 1fr);
         }
 
-        .spot-card.featured {
-          grid-column: span 1;
-        }
-
-        .season-photo {
-          min-height: 360px;
+        .tradition-photo {
+          min-height: 380px;
         }
       }
 
       @media (max-width: 620px) {
-        .hero-inner,
+        .hero {
+          min-height: 760px;
+        }
+
+        .hero-inner {
+          padding-top: 154px;
+          padding-bottom: 40px;
+        }
+
+        #course-layout {
+          height: 260px;
+        }
+
         section {
-          padding-top: 58px;
-          padding-bottom: 46px;
+          padding: 58px 0;
         }
 
-        .area-grid,
-        .route-grid,
-        .tips-grid,
-        .hero-panel {
-          grid-template-columns: 1fr;
-        }
-
-        .season-item {
+        .amenity-grid,
+        .plan-card {
           grid-template-columns: 1fr;
         }
 
@@ -612,366 +586,178 @@
   <body>
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="#top" aria-label="埼玉よりみち案内 トップへ">
-          <span class="brand-mark">埼</span>
-          <span>埼玉よりみち案内<small>Just north of Tokyo</small></span>
+        <a class="brand" href="#top" aria-label="Hillside Classic Golf Club トップへ">
+          <span class="brand-mark">H</span>
+          <span>Hillside Classic Golf Club<small>Established fairway style</small></span>
         </a>
         <nav aria-label="サイト内ナビゲーション">
-          <a href="#spots">観光地</a>
-          <a href="#routes">モデルコース</a>
-          <a href="#season">季節</a>
-          <a href="#tips">旅のヒント</a>
+          <a href="#course">コース</a>
+          <a href="#amenities">クラブ</a>
+          <a href="#plans">過ごし方</a>
+          <a href="#booking">予約</a>
         </nav>
-        <a class="header-link" href="#routes">日帰りで探す</a>
+        <a class="header-cta" href="#booking">ティータイム</a>
       </div>
     </header>
 
     <main id="top">
-      <section class="hero" aria-label="埼玉観光の概要">
+      <section class="hero" aria-label="クラシックゴルフクラブのメインビジュアル">
         <div class="hero-inner">
-          <p class="eyebrow">TOKYOから少し北へ</p>
-          <h1>川越の蔵、長瀞の川、秩父の山へ。</h1>
+          <p class="eyebrow">MORNING TEE / OLD CLUBHOUSE / QUIET GREEN</p>
+          <h1>週末は、芝の上で深呼吸する。</h1>
           <p class="hero-copy">
-            都心から日帰りしやすい埼玉には、歴史ある町並み、渓谷のアクティビティ、
-            花の名所、鉄道文化、北欧テーマパークまで揃っています。目的別に選びやすいよう、
-            代表的な観光地をまとめました。
+            木立に囲まれたフェアウェイ、真鍮のサインが似合うクラブハウス、朝露の残るグリーン。
+            Hillside Classic は、急がず、丁寧に一打を楽しみたくなるゴルフクラブです。
           </p>
           <div class="actions">
-            <a class="button primary" href="#spots">スポットを見る</a>
-            <a class="button" href="#season">季節で選ぶ</a>
+            <a class="button primary" href="#booking">ティータイムを相談</a>
+            <a class="button" href="#course">コースを見る</a>
           </div>
-          <div class="hero-panel" aria-label="埼玉観光の特徴">
-            <div class="hero-stat">
-              <strong>歴史</strong>
-              <span>小江戸・川越の町歩き</span>
-            </div>
-            <div class="hero-stat">
-              <strong>自然</strong>
-              <span>長瀞・秩父の渓谷と山</span>
-            </div>
-            <div class="hero-stat">
-              <strong>家族旅</strong>
-              <span>鉄道博物館や飯能の森</span>
+          <div class="course-layout-panel">
+            <canvas id="course-layout" aria-label="Three.jsで作成したクラシックゴルフコースの3Dレイアウト"></canvas>
+            <div class="layout-caption" aria-hidden="true">
+              <span>HOLE 7</span>
+              <span>PAR 4</span>
+              <span>384 YARDS</span>
+              <span>DOGLEG LEFT</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="spots">
+      <section id="course">
         <div class="section-inner">
           <div class="section-heading">
             <div>
-              <p class="label">SIGHTSEEING SPOTS</p>
-              <h2>まず押さえたい観光地</h2>
+              <p class="label">THE COURSE</p>
+              <h2>また打ちたくなる、正統派の18ホール。</h2>
             </div>
             <p class="section-copy">
-              「街歩き」「自然」「花」「体験」「家族向け」のバランスで、初めての埼玉旅行でも
-              計画に入れやすい場所を選びました。
+              豪快なドライバーだけでなく、番手選び、落とし所、グリーン周りの繊細さが報われる設計。
+              初心者にも上級者にも、次の一打を考える楽しさがあります。
             </p>
           </div>
 
-          <div class="area-grid">
-            <article class="spot-card featured">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Toki%20no%20Kane%201.jpg?width=1300"
-                  alt="川越の時の鐘"
-                >
-                <span class="tag">川越市</span>
-              </div>
-              <div class="spot-body">
-                <h3>川越 蔵造りの町並み・時の鐘</h3>
+          <div class="course-grid">
+            <article class="course-card">
+              <div class="course-photo" role="img" aria-label="木立に囲まれたフェアウェイ"></div>
+              <div class="card-body">
+                <h3>Tree-lined Fairway</h3>
                 <p>
-                  江戸の面影を残す蔵造りの町並みと、川越の象徴として親しまれる時の鐘。
-                  菓子屋横丁や神社巡りを組み合わせると、半日でも満足度の高い街歩きになります。
+                  両サイドの木立が視線を絞り、ティーショットの集中力を高めます。
+                  無理に攻めず、フェアウェイ中央へ置く楽しさがあるクラシックなホール構成です。
                 </p>
-                <div class="meta">
-                  <span>歴史</span>
-                  <span>食べ歩き</span>
-                  <span>写真</span>
-                </div>
               </div>
             </article>
 
-            <article class="spot-card">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Nagatoro%20Iwadatami%20Rocks%20%2811043316575%29.jpg?width=900"
-                  alt="長瀞の岩畳"
-                >
-                <span class="tag">長瀞町</span>
-              </div>
-              <div class="spot-body">
-                <h3>長瀞 岩畳・ラインくだり</h3>
-                <p>
-                  荒川沿いの岩畳と渓谷美を楽しむ定番スポット。春の桜、夏の川遊び、
-                  秋の紅葉、冬のこたつ舟まで、季節ごとの表情があります。
-                </p>
-                <div class="meta">
-                  <span>自然</span>
-                  <span>アクティビティ</span>
-                </div>
+            <article class="stat-card">
+              <div class="stat">18</div>
+              <div>
+                <h3>Holes</h3>
+                <p>午前のスルー、昼食を挟むゆったりラウンド、夕方の薄暮プレーまで似合う構成です。</p>
               </div>
             </article>
 
-            <article class="spot-card">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Chichibu%20Hitsujiyama%20Park%20Phlox%20Hill%202.JPG?width=900"
-                  alt="羊山公園の芝桜"
-                >
-                <span class="tag">秩父市</span>
-              </div>
-              <div class="spot-body">
-                <h3>羊山公園 芝桜の丘</h3>
-                <p>
-                  秩父市街と武甲山を望む公園。春は桜と芝桜が主役で、見晴しの丘や遊具広場もあり、
-                  花を眺めながらゆっくり過ごせます。
-                </p>
-                <div class="meta">
-                  <span>花</span>
-                  <span>春旅</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="spot-card">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Main%20hall%20of%20the%20Railway%20Museum%20in%20Saitama%20January%202019.jpg?width=900"
-                  alt="鉄道博物館の展示ホール"
-                >
-                <span class="tag">さいたま市</span>
-              </div>
-              <div class="spot-body">
-                <h3>鉄道博物館</h3>
-                <p>
-                  大宮エリアの人気ミュージアム。実物車両、運転体験、鉄道の仕組みを学べる展示があり、
-                  子ども連れにも鉄道好きにも向いています。
-                </p>
-                <div class="meta">
-                  <span>ミュージアム</span>
-                  <span>家族</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="spot-card">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/%E3%83%A1%E3%83%83%E3%83%84%E3%82%A1%20%2847983380597%29.jpg?width=900"
-                  alt="飯能のメッツァ周辺"
-                >
-                <span class="tag">飯能市</span>
-              </div>
-              <div class="spot-body">
-                <h3>ムーミンバレーパーク・メッツァ</h3>
-                <p>
-                  宮沢湖の森に広がる北欧テーマのエリア。ムーミンの世界観、湖畔の散策、
-                  ショップやカフェを合わせて一日楽しめます。
-                </p>
-                <div class="meta">
-                  <span>テーマパーク</span>
-                  <span>湖畔</span>
-                </div>
-              </div>
-            </article>
-
-            <article class="spot-card">
-              <div class="spot-image">
-                <img
-                  src="https://commons.wikimedia.org/wiki/Special:FilePath/Zuishinmon%20Gate%2C%20Mitsumine%20Shrine%2C%20Chichibu%20-%20Nov%201%2C%202016%20%281%29.jpg?width=900"
-                  alt="三峯神社の随身門"
-                >
-                <span class="tag">秩父市</span>
-              </div>
-              <div class="spot-body">
-                <h3>三峯神社</h3>
-                <p>
-                  奥秩父の山中に鎮座する神社。深い森、重厚な社殿、山の空気を味わえるため、
-                  秩父をじっくり巡る日程に入れたい場所です。
-                </p>
-                <div class="meta">
-                  <span>神社</span>
-                  <span>山景色</span>
-                </div>
+            <article class="stat-card">
+              <div class="stat">Par 72</div>
+              <div>
+                <h3>Classic Routing</h3>
+                <p>パー5で伸ばし、パー3で整え、パー4で組み立てる。王道のテンポで一日を楽しめます。</p>
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="band" id="routes">
+      <section class="amenities" id="amenities">
         <div class="section-inner">
           <div class="section-heading">
             <div>
-              <p class="label">DAY TRIP ROUTES</p>
-              <h2>日帰りモデルコース</h2>
+              <p class="label">CLUB EXPERIENCE</p>
+              <h2>ラウンド前後まで、ゴルフの時間。</h2>
             </div>
             <p class="section-copy">
-              目的地を詰め込みすぎず、移動と休憩の余白を残した組み方です。
-              初回は1エリア集中にすると、食事や買い物まで楽しめます。
+              プレーそのものだけでなく、到着してから帰るまでの空気感を大切にします。
+              クラシックな装いで、週末の予定に入れたくなる体験へ。
             </p>
           </div>
 
-          <div class="route-grid">
-            <article class="route-card">
-              <h3>小江戸さんぽ</h3>
-              <ol>
-                <li>本川越駅または川越駅から一番街へ</li>
-                <li>蔵造りの町並みと時の鐘を撮影</li>
-                <li>菓子屋横丁で食べ歩き</li>
-                <li>川越氷川神社や小江戸蔵里へ寄り道</li>
-              </ol>
+          <div class="amenity-grid">
+            <article class="amenity">
+              <strong>01</strong>
+              <h3>Morning Practice</h3>
+              <p>スタート前に軽く打てるレンジとパッティンググリーン。朝の体を静かに整えます。</p>
             </article>
-
-            <article class="route-card">
-              <h3>長瀞リバー旅</h3>
-              <ol>
-                <li>長瀞駅から岩畳へ徒歩移動</li>
-                <li>ラインくだりや川沿い散策</li>
-                <li>宝登山神社へ参拝</li>
-                <li>季節に合わせて桜・紅葉・ロウバイを追加</li>
-              </ol>
+            <article class="amenity">
+              <strong>02</strong>
+              <h3>Clubhouse Lunch</h3>
+              <p>木目と革張りの雰囲気が似合うラウンジで、午後のラウンドに向けて一息つけます。</p>
             </article>
-
-            <article class="route-card">
-              <h3>大宮・鉄道の日</h3>
-              <ol>
-                <li>大宮駅からニューシャトルで鉄道博物館へ</li>
-                <li>車両展示と体験展示を巡る</li>
-                <li>大宮公園や氷川神社へ移動</li>
-                <li>駅周辺で買い物と夕食</li>
-              </ol>
+            <article class="amenity">
+              <strong>03</strong>
+              <h3>Pro Shop</h3>
+              <p>グローブ、ボール、クラブ小物を厳選。落ち着いた色味のウェアも並べたくなる売場です。</p>
+            </article>
+            <article class="amenity">
+              <strong>04</strong>
+              <h3>Twilight Round</h3>
+              <p>夕方の斜光にフェアウェイが浮かぶ時間。仕事帰りや短時間の練習ラウンドにも向いています。</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="season">
+      <section id="plans">
         <div class="section-inner">
-          <div class="section-heading">
+          <div class="tradition-grid">
+            <div class="tradition-photo" role="img" aria-label="グリーンのピンフラッグ"></div>
             <div>
-              <p class="label">SEASONAL PICKS</p>
-              <h2>季節で選ぶ埼玉</h2>
-            </div>
-            <p class="section-copy">
-              花と紅葉の名所が多いので、季節の見頃を軸にすると旅程を決めやすくなります。
-              イベントや開花状況は直前に公式情報を確認してください。
-            </p>
-          </div>
-
-          <div class="season-grid">
-            <div class="season-photo" role="img" aria-label="羊山公園の芝桜"></div>
-            <div class="season-list">
-              <article class="season-item">
-                <strong>春</strong>
-                <div>
-                  <h3>川越の町歩き、長瀞の桜、羊山公園の芝桜</h3>
-                  <p>
-                    歩きやすい気候で、街並み観光と花の名所を組み合わせやすい季節。
-                    羊山公園の芝桜は例年4月下旬から5月上旬が目安です。
-                  </p>
-                </div>
-              </article>
-
-              <article class="season-item">
-                <strong>夏</strong>
-                <div>
-                  <h3>長瀞の川遊び、飯能の湖畔、大宮の屋内展示</h3>
-                  <p>
-                    暑い日は水辺や屋内ミュージアムを中心に。長瀞では川下りやラフティング、
-                    飯能では森と湖の散策が候補になります。
-                  </p>
-                </div>
-              </article>
-
-              <article class="season-item">
-                <strong>秋</strong>
-                <div>
-                  <h3>長瀞の紅葉、秩父の神社巡り</h3>
-                  <p>
-                    岩畳周辺や月の石もみじ公園は紅葉の定番。秩父の寺社と合わせると、
-                    山あいの景色を深く楽しめます。
-                  </p>
-                </div>
-              </article>
-
-              <article class="season-item">
-                <strong>冬</strong>
-                <div>
-                  <h3>宝登山のロウバイ、温泉、落ち着いた街歩き</h3>
-                  <p>
-                    混雑を避けたい人には冬の川越や秩父もおすすめ。宝登山のロウバイや
-                    秩父の温泉を目当てにすると、寒い時期でも目的がはっきりします。
-                  </p>
-                </div>
-              </article>
+              <p class="label">HOW TO PLAY</p>
+              <h2>今日の気分で選ぶ、ゴルフの過ごし方。</h2>
+              <p class="section-copy">
+                しっかり18ホール、仲間と気軽にハーフ、夕方からの練習ラウンド。
+                予定に合わせて選べるから、ゴルフが週末の習慣になります。
+              </p>
+              <div class="plan-list">
+                <article class="plan-card">
+                  <strong>AM</strong>
+                  <div>
+                    <h3>朝一番の18ホール</h3>
+                    <p>静かなスタートで一日を長く使える定番プラン。空気が澄んだ時間のティーショットが主役です。</p>
+                  </div>
+                </article>
+                <article class="plan-card">
+                  <strong>9H</strong>
+                  <div>
+                    <h3>気軽なハーフラウンド</h3>
+                    <p>初心者や久しぶりのプレーにも向いたプラン。練習場よりも、芝の上で感覚を戻せます。</p>
+                  </div>
+                </article>
+                <article class="plan-card">
+                  <strong>PM</strong>
+                  <div>
+                    <h3>薄暮のクラシックラウンド</h3>
+                    <p>西日が伸びるフェアウェイを歩く短時間プレー。夕方の風とグリーンの静けさが魅力です。</p>
+                  </div>
+                </article>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="tips" id="tips">
+      <section class="booking" id="booking">
         <div class="section-inner">
-          <div class="section-heading">
+          <div class="booking-box">
             <div>
-              <p class="label">TRAVEL TIPS</p>
-              <h2>計画前のヒント</h2>
-            </div>
-            <p class="section-copy">
-              埼玉観光はエリアごとの個性が強いので、移動手段と季節を先に決めると迷いにくくなります。
-            </p>
-          </div>
-
-          <div class="tips-grid">
-            <article class="tip">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                <path d="M4 17h16M6 17l2-9h8l2 9M8 21h.01M16 21h.01M9 8V5h6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <h3>電車旅と相性がいい</h3>
-              <p>川越、大宮、飯能は駅から動きやすく、長瀞や秩父も鉄道旅の目的地として組みやすいです。</p>
-            </article>
-
-            <article class="tip">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                <path d="M12 21s7-5.1 7-11a7 7 0 1 0-14 0c0 5.9 7 11 7 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="2"/>
-              </svg>
-              <h3>1日1エリアが基本</h3>
-              <p>川越と秩父など離れたエリアを同日に詰めるより、目的地を絞る方が食事や散策の余白が残ります。</p>
-            </article>
-
-            <article class="tip">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                <path d="M4 5h16M6 5v14h12V5M9 9h6M9 13h6M9 17h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <h3>イベント日は事前確認</h3>
-              <p>花の見頃、祭り、川下り、テーマパーク料金は時期で変わるため、直前に公式サイトで確認すると安心です。</p>
-            </article>
-
-            <article class="tip">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
-                <path d="M4 19c3-6 5-9 8-9s5 3 8 9M8 19c1.8-3.2 2.8-5 4-5s2.2 1.8 4 5M12 5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <h3>秩父方面は装備も意識</h3>
-              <p>三峯神社や山側のスポットは気温差が出やすいので、歩きやすい靴と羽織れる服が役立ちます。</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="closing">
-        <div class="section-inner">
-          <div class="closing-box">
-            <div>
-              <h2>次の休日は、埼玉を一か所だけ深く。</h2>
+              <p class="label">TEE TIME</p>
+              <h2>次の休日、クラブを車に積みたくなる。</h2>
               <p>
-                初めてなら川越、自然を味わうなら長瀞、家族で屋内も楽しむなら大宮、
-                花と山景色なら秩父。近いからこそ、急がず巡るのが埼玉観光の楽しみ方です。
+                仲間とのラウンド、夫婦でのハーフ、ひとりで整える朝練習。
+                希望の時間帯と人数を伝えるだけで、気分に合うプレー枠を相談できます。
               </p>
             </div>
-            <a class="button primary" href="#spots">候補を見直す</a>
+            <a class="button primary" href="mailto:info@example.com">予約を相談する</a>
           </div>
         </div>
       </section>
@@ -979,13 +765,214 @@
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <span>© 2026 埼玉よりみち案内</span>
-        <span>
-          画像: Wikimedia Commons / 情報参照:
-          <a href="https://saitama-supportdesk.com/" target="_blank" rel="noreferrer">埼玉観光情報</a>
-          ほか公式観光サイト
-        </span>
+        <span>© 2026 Hillside Classic Golf Club</span>
+        <span>Classic golf website concept / Fairway, clubhouse, tee time</span>
       </div>
     </footer>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.164.1/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+
+      const canvas = document.querySelector("#course-layout");
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+      camera.position.set(0, 8.2, 8.8);
+
+      scene.add(new THREE.HemisphereLight(0xf8eed4, 0x14341f, 1.6));
+
+      const sun = new THREE.DirectionalLight(0xfff2c4, 2.4);
+      sun.position.set(-4, 8, 5);
+      scene.add(sun);
+
+      const materials = {
+        rough: new THREE.MeshStandardMaterial({ color: 0x234a28, roughness: 0.82 }),
+        fairway: new THREE.MeshStandardMaterial({ color: 0x6f8f4f, roughness: 0.72 }),
+        green: new THREE.MeshStandardMaterial({ color: 0x8fb56c, roughness: 0.62 }),
+        tee: new THREE.MeshStandardMaterial({ color: 0x6b8b52, roughness: 0.72 }),
+        sand: new THREE.MeshStandardMaterial({ color: 0xd8c28d, roughness: 0.9 }),
+        water: new THREE.MeshStandardMaterial({
+          color: 0x2d75a6,
+          roughness: 0.2,
+          metalness: 0.05,
+          transparent: true,
+          opacity: 0.82,
+        }),
+        trunk: new THREE.MeshStandardMaterial({ color: 0x5a3820, roughness: 0.88 }),
+        leaf: new THREE.MeshStandardMaterial({ color: 0x183c26, roughness: 0.78 }),
+        brass: new THREE.MeshStandardMaterial({
+          color: 0xb99045,
+          metalness: 0.35,
+          roughness: 0.34,
+        }),
+        white: new THREE.MeshStandardMaterial({ color: 0xf5efde, roughness: 0.42 }),
+        claret: new THREE.MeshStandardMaterial({ color: 0x7c2d25, roughness: 0.56 }),
+      };
+
+      function plane(width, height, material, x, z, rotation = 0) {
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.rotation.z = rotation;
+        mesh.position.set(x, 0, z);
+        scene.add(mesh);
+        return mesh;
+      }
+
+      plane(14, 9, materials.rough, 0, 0);
+      plane(1.7, 1.05, materials.tee, -4.8, 2.75, -0.22);
+      plane(2.6, 5.7, materials.fairway, -3.1, 1.28, -0.35);
+      plane(2.8, 4.8, materials.fairway, -0.9, -0.32, -0.72);
+      plane(2.45, 3.6, materials.fairway, 1.45, -1.25, -1.08);
+
+      const green = new THREE.Mesh(new THREE.CircleGeometry(1.08, 64), materials.green);
+      green.rotation.x = -Math.PI / 2;
+      green.scale.set(1.28, 0.88, 1);
+      green.position.set(3.55, 0.018, -2.4);
+      scene.add(green);
+
+      const water = new THREE.Mesh(new THREE.CircleGeometry(1.05, 48), materials.water);
+      water.rotation.x = -Math.PI / 2;
+      water.scale.set(1.45, 0.62, 1);
+      water.position.set(0.95, 0.025, 1.35);
+      scene.add(water);
+
+      [
+        [-0.25, -1.65, 0.62, 0.35, 0.25],
+        [2.55, -1.46, 0.76, 0.32, -0.4],
+        [3.95, -3.05, 0.54, 0.28, 0.2],
+      ].forEach(([x, z, sx, sz, rot]) => {
+        const bunker = new THREE.Mesh(new THREE.CircleGeometry(1, 42), materials.sand);
+        bunker.rotation.x = -Math.PI / 2;
+        bunker.rotation.z = rot;
+        bunker.scale.set(sx, sz, 1);
+        bunker.position.set(x, 0.032, z);
+        scene.add(bunker);
+      });
+
+      const cartPath = new THREE.CurvePath();
+      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(-5.6, 0.045, 3.45), new THREE.Vector3(-2.2, 0.045, 3.0)));
+      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(-2.2, 0.045, 3.0), new THREE.Vector3(0.3, 0.045, 2.2)));
+      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(0.3, 0.045, 2.2), new THREE.Vector3(4.65, 0.045, -0.85)));
+      const pathMesh = new THREE.Mesh(
+        new THREE.TubeGeometry(cartPath, 40, 0.055, 8, false),
+        materials.brass
+      );
+      scene.add(pathMesh);
+
+      function tree(x, z, scale = 1) {
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.07 * scale, 0.1 * scale, 0.52 * scale, 9), materials.trunk);
+        trunk.position.set(x, 0.26 * scale, z);
+        scene.add(trunk);
+
+        const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.34 * scale, 0.88 * scale, 10), materials.leaf);
+        leaves.position.set(x, 0.92 * scale, z);
+        scene.add(leaves);
+      }
+
+      [
+        [-5.5, -2.5, 1.1],
+        [-4.8, -1.7, 0.85],
+        [-4.2, -2.9, 0.9],
+        [-2.2, -3.25, 1],
+        [0.35, -3.45, 0.92],
+        [2.5, 3.1, 1],
+        [3.6, 2.45, 0.86],
+        [4.9, 1.8, 1.05],
+        [5.2, -1.2, 0.8],
+        [-5.8, 1.1, 0.95],
+      ].forEach(([x, z, s]) => tree(x, z, s));
+
+      const pinPole = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.1, 12), materials.white);
+      pinPole.position.set(3.55, 0.56, -2.4);
+      scene.add(pinPole);
+
+      const flagShape = new THREE.Shape();
+      flagShape.moveTo(0, 0);
+      flagShape.lineTo(0.46, 0.16);
+      flagShape.lineTo(0, 0.32);
+      flagShape.lineTo(0, 0);
+      const flag = new THREE.Mesh(new THREE.ShapeGeometry(flagShape), materials.claret);
+      flag.position.set(3.57, 1.02, -2.4);
+      flag.rotation.y = -0.35;
+      scene.add(flag);
+
+      const shotPoints = [
+        new THREE.Vector3(-4.85, 0.13, 2.75),
+        new THREE.Vector3(-2.25, 1.45, 1.55),
+        new THREE.Vector3(0.35, 1.05, -0.15),
+        new THREE.Vector3(2.45, 0.82, -1.6),
+        new THREE.Vector3(3.55, 0.16, -2.4),
+      ];
+      const shotCurve = new THREE.CatmullRomCurve3(shotPoints);
+      const shotLine = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(shotCurve.getPoints(90)),
+        new THREE.LineDashedMaterial({ color: 0xf5efde, dashSize: 0.14, gapSize: 0.08 })
+      );
+      shotLine.computeLineDistances();
+      scene.add(shotLine);
+
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.085, 24, 24), materials.white);
+      scene.add(ball);
+
+      const yardage = document.createElement("div");
+      yardage.textContent = "THREE.JS COURSE LAYOUT";
+      yardage.style.position = "absolute";
+      yardage.style.top = "12px";
+      yardage.style.left = "14px";
+      yardage.style.padding = "7px 9px";
+      yardage.style.border = "1px solid rgba(245, 239, 222, 0.18)";
+      yardage.style.borderRadius = "8px";
+      yardage.style.background = "rgba(8, 39, 25, 0.62)";
+      yardage.style.color = "#f5efde";
+      yardage.style.fontSize = "0.76rem";
+      yardage.style.fontWeight = "900";
+      canvas.parentElement.appendChild(yardage);
+
+      function resize() {
+        const width = canvas.clientWidth || 1;
+        const height = canvas.clientHeight || 1;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        camera.position.set(width < 640 ? 0 : -0.45, width < 640 ? 9.6 : 8.2, width < 640 ? 9.8 : 8.8);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+
+      const clock = new THREE.Clock();
+
+      function animate() {
+        const t = clock.getElapsedTime();
+        const progress = (Math.sin(t * 0.62) + 1) / 2;
+        const point = shotCurve.getPoint(progress);
+        ball.position.copy(point);
+
+        water.material.opacity = 0.72 + Math.sin(t * 2) * 0.08;
+        scene.rotation.y = Math.sin(t * 0.18) * 0.055;
+
+        camera.lookAt(0, 0.15, -0.1);
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
   </body>
 </html>
