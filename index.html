@@ -267,7 +267,7 @@
 
       #course-layout {
         width: 100%;
-        height: 310px;
+        height: 360px;
       }
 
       .layout-caption {
@@ -565,7 +565,7 @@
         }
 
         #course-layout {
-          height: 260px;
+          height: 300px;
         }
 
         section {
@@ -825,31 +825,65 @@
         claret: new THREE.MeshStandardMaterial({ color: 0x7c2d25, roughness: 0.56 }),
       };
 
-      function plane(width, height, material, x, z, rotation = 0) {
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+      function heightAt(x, z) {
+        return (
+          Math.sin(x * 0.78) * 0.13 +
+          Math.cos(z * 0.92) * 0.1 +
+          Math.sin((x + z) * 0.42) * 0.08
+        );
+      }
+
+      function terrain() {
+        const geometry = new THREE.PlaneGeometry(14, 9, 86, 56);
+        const position = geometry.attributes.position;
+
+        for (let index = 0; index < position.count; index += 1) {
+          const x = position.getX(index);
+          const y = position.getY(index);
+          position.setZ(index, heightAt(x, -y));
+        }
+
+        geometry.computeVertexNormals();
+
+        const mesh = new THREE.Mesh(geometry, materials.rough);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.rotation.z = rotation;
-        mesh.position.set(x, 0, z);
+        mesh.receiveShadow = true;
         scene.add(mesh);
         return mesh;
       }
 
-      plane(14, 9, materials.rough, 0, 0);
-      plane(1.7, 1.05, materials.tee, -4.8, 2.75, -0.22);
-      plane(2.6, 5.7, materials.fairway, -3.1, 1.28, -0.35);
-      plane(2.8, 4.8, materials.fairway, -0.9, -0.32, -0.72);
-      plane(2.45, 3.6, materials.fairway, 1.45, -1.25, -1.08);
+      function plane(width, height, material, x, z, rotation = 0, depth = 0.11) {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, depth, height), material);
+        mesh.rotation.y = rotation;
+        mesh.position.set(x, heightAt(x, z) + depth / 2 + 0.035, z);
+        scene.add(mesh);
+        return mesh;
+      }
 
-      const green = new THREE.Mesh(new THREE.CircleGeometry(1.08, 64), materials.green);
-      green.rotation.x = -Math.PI / 2;
-      green.scale.set(1.28, 0.88, 1);
-      green.position.set(3.55, 0.018, -2.4);
+      terrain();
+      plane(1.7, 1.05, materials.tee, -4.8, 2.75, -0.22, 0.16);
+      plane(2.6, 5.7, materials.fairway, -3.1, 1.28, -0.35, 0.13);
+      plane(2.8, 4.8, materials.fairway, -0.9, -0.32, -0.72, 0.13);
+      plane(2.45, 3.6, materials.fairway, 1.45, -1.25, -1.08, 0.13);
+
+      const greenBase = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.24, 64), materials.green);
+      greenBase.scale.set(1.38, 1, 0.94);
+      greenBase.position.set(3.55, heightAt(3.55, -2.4) + 0.12, -2.4);
+      scene.add(greenBase);
+
+      const green = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 18, 0, Math.PI * 2, 0, Math.PI / 2), materials.green);
+      green.scale.set(1.32, 0.22, 0.9);
+      green.position.set(3.55, heightAt(3.55, -2.4) + 0.22, -2.4);
       scene.add(green);
 
-      const water = new THREE.Mesh(new THREE.CircleGeometry(1.05, 48), materials.water);
-      water.rotation.x = -Math.PI / 2;
-      water.scale.set(1.45, 0.62, 1);
-      water.position.set(0.95, 0.025, 1.35);
+      const waterBasin = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.08, 0.16, 48), materials.rough);
+      waterBasin.scale.set(1.55, 1, 0.7);
+      waterBasin.position.set(0.95, heightAt(0.95, 1.35) - 0.02, 1.35);
+      scene.add(waterBasin);
+
+      const water = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.035, 48), materials.water);
+      water.scale.set(1.45, 1, 0.62);
+      water.position.set(0.95, heightAt(0.95, 1.35) + 0.055, 1.35);
       scene.add(water);
 
       [
@@ -857,18 +891,28 @@
         [2.55, -1.46, 0.76, 0.32, -0.4],
         [3.95, -3.05, 0.54, 0.28, 0.2],
       ].forEach(([x, z, sx, sz, rot]) => {
-        const bunker = new THREE.Mesh(new THREE.CircleGeometry(1, 42), materials.sand);
-        bunker.rotation.x = -Math.PI / 2;
-        bunker.rotation.z = rot;
-        bunker.scale.set(sx, sz, 1);
-        bunker.position.set(x, 0.032, z);
+        const bunker = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.08, 0.08, 42), materials.sand);
+        bunker.rotation.y = rot;
+        bunker.scale.set(sx, 1, sz);
+        bunker.position.set(x, heightAt(x, z) + 0.015, z);
         scene.add(bunker);
+
+        const lip = new THREE.Mesh(new THREE.TorusGeometry(1, 0.035, 8, 42), materials.rough);
+        lip.rotation.x = Math.PI / 2;
+        lip.rotation.z = rot;
+        lip.scale.set(sx, sz, 1);
+        lip.position.set(x, heightAt(x, z) + 0.075, z);
+        scene.add(lip);
       });
 
       const cartPath = new THREE.CurvePath();
-      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(-5.6, 0.045, 3.45), new THREE.Vector3(-2.2, 0.045, 3.0)));
-      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(-2.2, 0.045, 3.0), new THREE.Vector3(0.3, 0.045, 2.2)));
-      cartPath.add(new THREE.LineCurve3(new THREE.Vector3(0.3, 0.045, 2.2), new THREE.Vector3(4.65, 0.045, -0.85)));
+      function groundPoint(x, z, lift = 0.08) {
+        return new THREE.Vector3(x, heightAt(x, z) + lift, z);
+      }
+
+      cartPath.add(new THREE.LineCurve3(groundPoint(-5.6, 3.45), groundPoint(-2.2, 3.0)));
+      cartPath.add(new THREE.LineCurve3(groundPoint(-2.2, 3.0), groundPoint(0.3, 2.2)));
+      cartPath.add(new THREE.LineCurve3(groundPoint(0.3, 2.2), groundPoint(4.65, -0.85)));
       const pathMesh = new THREE.Mesh(
         new THREE.TubeGeometry(cartPath, 40, 0.055, 8, false),
         materials.brass
@@ -877,13 +921,27 @@
 
       function tree(x, z, scale = 1) {
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.07 * scale, 0.1 * scale, 0.52 * scale, 9), materials.trunk);
-        trunk.position.set(x, 0.26 * scale, z);
+        trunk.position.set(x, heightAt(x, z) + 0.26 * scale, z);
         scene.add(trunk);
 
         const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.34 * scale, 0.88 * scale, 10), materials.leaf);
-        leaves.position.set(x, 0.92 * scale, z);
+        leaves.position.set(x, heightAt(x, z) + 0.92 * scale, z);
         scene.add(leaves);
       }
+
+      function mound(x, z, sx, sy, sz) {
+        const dome = new THREE.Mesh(
+          new THREE.SphereGeometry(1, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+          materials.rough
+        );
+        dome.scale.set(sx, sy, sz);
+        dome.position.set(x, heightAt(x, z) - 0.02, z);
+        scene.add(dome);
+      }
+
+      mound(-1.6, 2.35, 1.3, 0.28, 0.7);
+      mound(2.05, 0.65, 1.15, 0.2, 0.58);
+      mound(4.3, -2.05, 0.95, 0.18, 0.5);
 
       [
         [-5.5, -2.5, 1.1],
@@ -899,7 +957,7 @@
       ].forEach(([x, z, s]) => tree(x, z, s));
 
       const pinPole = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.1, 12), materials.white);
-      pinPole.position.set(3.55, 0.56, -2.4);
+      pinPole.position.set(3.55, heightAt(3.55, -2.4) + 0.84, -2.4);
       scene.add(pinPole);
 
       const flagShape = new THREE.Shape();
@@ -908,16 +966,16 @@
       flagShape.lineTo(0, 0.32);
       flagShape.lineTo(0, 0);
       const flag = new THREE.Mesh(new THREE.ShapeGeometry(flagShape), materials.claret);
-      flag.position.set(3.57, 1.02, -2.4);
+      flag.position.set(3.57, heightAt(3.55, -2.4) + 1.3, -2.4);
       flag.rotation.y = -0.35;
       scene.add(flag);
 
       const shotPoints = [
-        new THREE.Vector3(-4.85, 0.13, 2.75),
-        new THREE.Vector3(-2.25, 1.45, 1.55),
-        new THREE.Vector3(0.35, 1.05, -0.15),
-        new THREE.Vector3(2.45, 0.82, -1.6),
-        new THREE.Vector3(3.55, 0.16, -2.4),
+        groundPoint(-4.85, 2.75, 0.24),
+        new THREE.Vector3(-2.25, heightAt(-2.25, 1.55) + 1.62, 1.55),
+        new THREE.Vector3(0.35, heightAt(0.35, -0.15) + 1.24, -0.15),
+        new THREE.Vector3(2.45, heightAt(2.45, -1.6) + 0.96, -1.6),
+        groundPoint(3.55, -2.4, 0.38),
       ];
       const shotCurve = new THREE.CatmullRomCurve3(shotPoints);
       const shotLine = new THREE.Line(
