@@ -259,10 +259,25 @@
         max-width: 920px;
         margin-top: 52px;
         overflow: hidden;
-        border: 1px solid rgba(245, 239, 222, 0.2);
+        border: 1px solid rgba(245, 239, 222, 0.26);
         border-radius: 8px;
-        background: rgba(8, 39, 25, 0.5);
-        box-shadow: var(--shadow);
+        background:
+          linear-gradient(135deg, rgba(245, 239, 222, 0.1), transparent 34%),
+          rgba(8, 39, 25, 0.62);
+        box-shadow:
+          0 0 0 1px rgba(185, 144, 69, 0.16),
+          0 30px 90px rgba(0, 0, 0, 0.4);
+      }
+
+      .course-layout-panel::before {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        content: "";
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 72% 16%, rgba(225, 196, 123, 0.2), transparent 24%),
+          linear-gradient(180deg, transparent 64%, rgba(8, 39, 25, 0.46));
       }
 
       #course-layout {
@@ -275,6 +290,7 @@
         right: 14px;
         bottom: 12px;
         left: 14px;
+        z-index: 2;
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
@@ -790,6 +806,10 @@
 
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.08;
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
@@ -799,11 +819,24 @@
 
       const sun = new THREE.DirectionalLight(0xfff2c4, 2.4);
       sun.position.set(-4, 8, 5);
+      sun.castShadow = true;
+      sun.shadow.mapSize.set(1024, 1024);
+      sun.shadow.camera.near = 1;
+      sun.shadow.camera.far = 24;
+      sun.shadow.camera.left = -8;
+      sun.shadow.camera.right = 8;
+      sun.shadow.camera.top = 7;
+      sun.shadow.camera.bottom = -7;
       scene.add(sun);
 
+      const edgeLight = new THREE.DirectionalLight(0xd6f0ff, 1.25);
+      edgeLight.position.set(5, 4, -4);
+      scene.add(edgeLight);
+
       const materials = {
-        rough: new THREE.MeshStandardMaterial({ color: 0x234a28, roughness: 0.82 }),
-        fairway: new THREE.MeshStandardMaterial({ color: 0x6f8f4f, roughness: 0.72 }),
+        rough: new THREE.MeshStandardMaterial({ color: 0x1f4828, roughness: 0.82 }),
+        fairway: new THREE.MeshStandardMaterial({ color: 0x6f8f4f, roughness: 0.68 }),
+        fairwayStripe: new THREE.MeshStandardMaterial({ color: 0x89a760, roughness: 0.68 }),
         green: new THREE.MeshStandardMaterial({ color: 0x8fb56c, roughness: 0.62 }),
         tee: new THREE.MeshStandardMaterial({ color: 0x6b8b52, roughness: 0.72 }),
         sand: new THREE.MeshStandardMaterial({ color: 0xd8c28d, roughness: 0.9 }),
@@ -823,6 +856,7 @@
         }),
         white: new THREE.MeshStandardMaterial({ color: 0xf5efde, roughness: 0.42 }),
         claret: new THREE.MeshStandardMaterial({ color: 0x7c2d25, roughness: 0.56 }),
+        dark: new THREE.MeshStandardMaterial({ color: 0x10160f, roughness: 0.8 }),
       };
 
       function heightAt(x, z) {
@@ -848,6 +882,7 @@
         const mesh = new THREE.Mesh(geometry, materials.rough);
         mesh.rotation.x = -Math.PI / 2;
         mesh.receiveShadow = true;
+        mesh.castShadow = false;
         scene.add(mesh);
         return mesh;
       }
@@ -856,25 +891,61 @@
         const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, depth, height), material);
         mesh.rotation.y = rotation;
         mesh.position.set(x, heightAt(x, z) + depth / 2 + 0.035, z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
         scene.add(mesh);
         return mesh;
       }
 
       terrain();
       plane(1.7, 1.05, materials.tee, -4.8, 2.75, -0.22, 0.16);
-      plane(2.6, 5.7, materials.fairway, -3.1, 1.28, -0.35, 0.13);
-      plane(2.8, 4.8, materials.fairway, -0.9, -0.32, -0.72, 0.13);
-      plane(2.45, 3.6, materials.fairway, 1.45, -1.25, -1.08, 0.13);
+      const fairwayPieces = [
+        plane(2.6, 5.7, materials.fairway, -3.1, 1.28, -0.35, 0.13),
+        plane(2.8, 4.8, materials.fairway, -0.9, -0.32, -0.72, 0.13),
+        plane(2.45, 3.6, materials.fairway, 1.45, -1.25, -1.08, 0.13),
+      ];
+
+      [
+        [-3.55, 1.78, 0.32, 5.25, -0.35],
+        [-2.82, 0.82, 0.28, 4.85, -0.35],
+        [-1.28, -0.15, 0.3, 4.35, -0.72],
+        [-0.44, -0.78, 0.28, 3.95, -0.72],
+        [1.22, -1.12, 0.26, 3.05, -1.08],
+        [1.92, -1.72, 0.24, 2.65, -1.08],
+      ].forEach(([x, z, width, height, rotation]) => {
+        plane(width, height, materials.fairwayStripe, x, z, rotation, 0.145);
+      });
+
+      fairwayPieces.forEach((mesh) => {
+        const outline = new THREE.EdgesGeometry(mesh.geometry);
+        const line = new THREE.LineSegments(
+          outline,
+          new THREE.LineBasicMaterial({ color: 0xd9c78f, transparent: true, opacity: 0.18 })
+        );
+        line.position.copy(mesh.position);
+        line.rotation.copy(mesh.rotation);
+        scene.add(line);
+      });
 
       const greenBase = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.24, 64), materials.green);
       greenBase.scale.set(1.38, 1, 0.94);
       greenBase.position.set(3.55, heightAt(3.55, -2.4) + 0.12, -2.4);
+      greenBase.castShadow = true;
+      greenBase.receiveShadow = true;
       scene.add(greenBase);
 
       const green = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 18, 0, Math.PI * 2, 0, Math.PI / 2), materials.green);
       green.scale.set(1.32, 0.22, 0.9);
       green.position.set(3.55, heightAt(3.55, -2.4) + 0.22, -2.4);
+      green.castShadow = true;
+      green.receiveShadow = true;
       scene.add(green);
+
+      const greenRing = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.035, 8, 72), materials.brass);
+      greenRing.rotation.x = Math.PI / 2;
+      greenRing.scale.set(1.3, 0.88, 1);
+      greenRing.position.set(3.55, heightAt(3.55, -2.4) + 0.34, -2.4);
+      scene.add(greenRing);
 
       const waterBasin = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.08, 0.16, 48), materials.rough);
       waterBasin.scale.set(1.55, 1, 0.7);
@@ -886,6 +957,15 @@
       water.position.set(0.95, heightAt(0.95, 1.35) + 0.055, 1.35);
       scene.add(water);
 
+      const waterShine = new THREE.Mesh(
+        new THREE.TorusGeometry(0.82, 0.012, 8, 64),
+        new THREE.MeshBasicMaterial({ color: 0xc7ecff, transparent: true, opacity: 0.44 })
+      );
+      waterShine.rotation.x = Math.PI / 2;
+      waterShine.scale.set(1.52, 0.58, 1);
+      waterShine.position.set(0.95, heightAt(0.95, 1.35) + 0.09, 1.35);
+      scene.add(waterShine);
+
       [
         [-0.25, -1.65, 0.62, 0.35, 0.25],
         [2.55, -1.46, 0.76, 0.32, -0.4],
@@ -895,6 +975,7 @@
         bunker.rotation.y = rot;
         bunker.scale.set(sx, 1, sz);
         bunker.position.set(x, heightAt(x, z) + 0.015, z);
+        bunker.receiveShadow = true;
         scene.add(bunker);
 
         const lip = new THREE.Mesh(new THREE.TorusGeometry(1, 0.035, 8, 42), materials.rough);
@@ -902,6 +983,7 @@
         lip.rotation.z = rot;
         lip.scale.set(sx, sz, 1);
         lip.position.set(x, heightAt(x, z) + 0.075, z);
+        lip.castShadow = true;
         scene.add(lip);
       });
 
@@ -917,15 +999,49 @@
         new THREE.TubeGeometry(cartPath, 40, 0.055, 8, false),
         materials.brass
       );
+      pathMesh.castShadow = true;
       scene.add(pathMesh);
+
+      function marker(text, x, z) {
+        const group = new THREE.Group();
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.42, 10), materials.brass);
+        post.position.y = 0.21;
+        const head = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.22, 0.035), materials.dark);
+        head.position.y = 0.52;
+        const canvas2d = document.createElement("canvas");
+        canvas2d.width = 128;
+        canvas2d.height = 64;
+        const context = canvas2d.getContext("2d");
+        context.fillStyle = "#f5efde";
+        context.font = "bold 30px Georgia";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(text, 64, 33);
+        const texture = new THREE.CanvasTexture(canvas2d);
+        const label = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.38, 0.19),
+          new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+        );
+        label.position.set(0, 0.525, 0.02);
+        group.add(post, head, label);
+        group.position.set(x, heightAt(x, z) + 0.06, z);
+        group.rotation.y = -0.35;
+        scene.add(group);
+      }
+
+      marker("150", -0.75, 1.16);
+      marker("100", 1.28, -0.62);
+      marker("50", 2.62, -1.72);
 
       function tree(x, z, scale = 1) {
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.07 * scale, 0.1 * scale, 0.52 * scale, 9), materials.trunk);
         trunk.position.set(x, heightAt(x, z) + 0.26 * scale, z);
+        trunk.castShadow = true;
         scene.add(trunk);
 
         const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.34 * scale, 0.88 * scale, 10), materials.leaf);
         leaves.position.set(x, heightAt(x, z) + 0.92 * scale, z);
+        leaves.castShadow = true;
         scene.add(leaves);
       }
 
@@ -936,6 +1052,8 @@
         );
         dome.scale.set(sx, sy, sz);
         dome.position.set(x, heightAt(x, z) - 0.02, z);
+        dome.castShadow = true;
+        dome.receiveShadow = true;
         scene.add(dome);
       }
 
@@ -958,6 +1076,7 @@
 
       const pinPole = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.1, 12), materials.white);
       pinPole.position.set(3.55, heightAt(3.55, -2.4) + 0.84, -2.4);
+      pinPole.castShadow = true;
       scene.add(pinPole);
 
       const flagShape = new THREE.Shape();
@@ -968,6 +1087,7 @@
       const flag = new THREE.Mesh(new THREE.ShapeGeometry(flagShape), materials.claret);
       flag.position.set(3.57, heightAt(3.55, -2.4) + 1.3, -2.4);
       flag.rotation.y = -0.35;
+      flag.castShadow = true;
       scene.add(flag);
 
       const shotPoints = [
@@ -985,8 +1105,30 @@
       shotLine.computeLineDistances();
       scene.add(shotLine);
 
+      const glowLine = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(shotCurve.getPoints(90)),
+        new THREE.LineBasicMaterial({ color: 0xe1c47b, transparent: true, opacity: 0.24 })
+      );
+      glowLine.scale.set(1.004, 1.004, 1.004);
+      scene.add(glowLine);
+
       const ball = new THREE.Mesh(new THREE.SphereGeometry(0.085, 24, 24), materials.white);
+      ball.castShadow = true;
       scene.add(ball);
+
+      const teeStones = [
+        [-5.45, 2.45],
+        [-5.18, 3.13],
+        [-4.46, 2.38],
+        [-4.22, 3.06],
+      ];
+      teeStones.forEach(([x, z]) => {
+        const stone = new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 10), materials.white);
+        stone.scale.y = 0.42;
+        stone.position.set(x, heightAt(x, z) + 0.17, z);
+        stone.castShadow = true;
+        scene.add(stone);
+      });
 
       const yardage = document.createElement("div");
       yardage.textContent = "THREE.JS COURSE LAYOUT";
@@ -1008,7 +1150,7 @@
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-        camera.position.set(width < 640 ? 0 : -0.45, width < 640 ? 9.6 : 8.2, width < 640 ? 9.8 : 8.8);
+        camera.position.set(width < 640 ? -0.4 : -1.25, width < 640 ? 10.3 : 8.55, width < 640 ? 10.4 : 8.35);
       }
 
       window.addEventListener("resize", resize);
@@ -1023,9 +1165,11 @@
         ball.position.copy(point);
 
         water.material.opacity = 0.72 + Math.sin(t * 2) * 0.08;
-        scene.rotation.y = Math.sin(t * 0.18) * 0.055;
+        waterShine.rotation.z = t * 0.22;
+        flag.rotation.y = -0.35 + Math.sin(t * 2.4) * 0.1;
+        scene.rotation.y = Math.sin(t * 0.18) * 0.075;
 
-        camera.lookAt(0, 0.15, -0.1);
+        camera.lookAt(0.08, 0.32, -0.2);
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
       }
